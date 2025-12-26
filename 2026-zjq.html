@@ -6,6 +6,13 @@
     <title>2026 马年大吉</title>
     <link rel="stylesheet" href="style.css">
 </head>
+<audio id="bgMusic" loop>
+    <source src="bg.mp3" type="audio/mpeg">
+</audio>
+
+<div id="musicBtn" onclick="toggleMusic()" style="position: fixed; top: 20px; right: 20px; z-index: 100; cursor: pointer; font-size: 24px; background: rgba(0,0,0,0.3); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--accent-gold);">
+    <span id="musicIcon">🎵</span>
+</div>
 <body>
 
     <div id="fireworks"></div>
@@ -55,9 +62,9 @@
                 <div class="card">
                     <h3 style="font-size: 1.5rem;">💌 专属礼物</h3>
                     <p>策马扬鞭，奔向新的一年</p>
-                    <a href="https://your-gift-link.com" class="jump-card">点击开启惊喜</a>
+                    <a href="lottery.html" class="jump-card">点击开启惊喜</a>
                     <div style="margin-top: 40px; font-size: 0.8rem; opacity: 0.6;">
-                        <p>—— [你的名字] 敬上</p>
+                        <p>—— 某某 敬上</p>
                         <p>2026年 农历新年</p>
                     </div>
                 </div>
@@ -127,6 +134,41 @@
             }
         }
         setInterval(createFirework, 700);
+        const audio = document.getElementById('bgMusic');
+        const musicIcon = document.getElementById('musicIcon');
+        let isPlaying = false;
+
+        // 切换播放/暂停
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicIcon.style.animation = 'none';
+            } else {
+                audio.play();
+                musicIcon.style.animation = 'rotating 2s linear infinite';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // 自动播放黑科技：监听第一次交互
+        document.addEventListener('touchstart', function() {
+            if (!isPlaying) {
+                toggleMusic();
+            }
+        }, { once: true }); // 只执行一次
+
+        document.addEventListener('click', function() {
+            if (!isPlaying) {
+                toggleMusic();
+            }
+        }, { once: true });
+
+        // 微信环境特殊处理
+        document.addEventListener("WeixinJSBridgeReady", function () {
+            audio.play();
+            isPlaying = true;
+            musicIcon.style.animation = 'rotating 2s linear infinite';
+        }, false);
     </script>
 </body>
 </html>
