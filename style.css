@@ -148,3 +148,40 @@ body, html {
 .nav-btn { position: fixed; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--accent-gold); font-size: 50px; z-index: 100; opacity: 0.3; }
 @media (max-width: 768px) { .nav-btn { display: none; } }
 .btn-prev { left: 20px; } .btn-next { right: 20px; }
+
+/* Twikoo 整体容器适配 */
+#tcomment {
+    width: 100%;
+    text-align: left;
+    /* 修改 Twikoo 的 CSS 变量 */
+    --twikoo-theme-color: var(--accent-gold);
+    --twikoo-font-color: #ffffff;
+}
+
+/* 强制修改 Twikoo 内部文字颜色 */
+.tk-content, .tk-nick, .tk-time, .tk-action-link, .tk-counter {
+    color: #fff !important;
+}
+
+/* 输入框和预览区域 */
+.tk-submit, .tk-content {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+/* 输入框聚焦效果 */
+.el-input__inner, .el-textarea__inner {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #fff !important;
+    border: 1px solid var(--accent-gold) !important;
+}
+
+/* 隐藏部分不需要的元素 */
+.tk-footer, .tk-extra { display: none !important; }
+
+/* 保证留言板在移动端卡片里能顺畅滑动 */
+.card-scrollable {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+}
