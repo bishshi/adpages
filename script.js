@@ -106,3 +106,37 @@ const scrollContent = document.getElementById('scrollContent');
 scrollContent.addEventListener('touchmove', (e) => {
     e.stopPropagation();
 }, { passive: true });
+
+function updateCountdown() {
+    // 设置 2026 年春节日期 (2026-02-17 00:00:00)
+    const targetDate = new Date('2026-02-17T00:00:00').getTime();
+    const now = new Date().getTime();
+    const gap = targetDate - now;
+
+    if (gap <= 0) {
+        document.querySelector('.countdown-title').innerText = "新年快乐！";
+        document.querySelector('.countdown-timer').innerText = "2026 马年大吉 · 万事如意";
+        return;
+    }
+
+    // 时间换算逻辑
+    const second = 1000;
+    const minute = second * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
+
+    const d = Math.floor(gap / day);
+    const h = Math.floor((gap % day) / hour);
+    const m = Math.floor((gap % hour) / minute);
+    const s = Math.floor((gap % minute) / second);
+
+    // 更新到页面，并补全 0 (补齐两位数)
+    document.getElementById('days').innerText = d.toString().padStart(2, '0');
+    document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+    document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+    document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+}
+
+// 每秒刷新一次
+setInterval(updateCountdown, 1000);
+updateCountdown(); // 立即执行一次避免 1 秒空白
