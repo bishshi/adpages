@@ -17,36 +17,32 @@ body, html {
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 100;
+    z-index: 1000; /* 确保在最上层 */
     text-align: center;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     padding: 10px 20px;
     border-radius: 15px;
-    border: 1px solid rgba(255, 215, 0, 0.3);
+    border: 1px solid rgba(255, 215, 0, 0.5);
     color: var(--accent-gold);
-    pointer-events: none; /* 防止遮挡点击操作 */
-    width: auto;
-    white-space: nowrap;
+    
+    /* 修改点：允许点击并添加过渡动画 */
+    pointer-events: all; 
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
 }
 
-.countdown-title {
-    font-size: 0.75rem;
-    opacity: 0.8;
-    margin-bottom: 5px;
-    letter-spacing: 1px;
+/* 添加悬停效果，让用户知道可以点 */
+#countdown:hover {
+    background: rgba(139, 0, 0, 0.8);
+    border-color: var(--accent-gold);
+    transform: translateX(-50%) scale(1.05);
 }
 
-.countdown-timer {
-    font-family: "Monaco", monospace; /* 使用等宽字体防止跳动 */
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
-}
-
-.countdown-timer span {
-    color: #fff;
-    margin: 0 2px;
+#countdown:active {
+    transform: translateX(-50%) scale(0.95);
 }
 
 /* 适配移动端小屏幕 */
