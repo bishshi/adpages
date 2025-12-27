@@ -188,7 +188,7 @@
             }
             
             // 自动识别当前环境的路径
-            const baseUrl = window.location.origin + window.location.pathname.replace('make.html', 'index.html');
+            const baseUrl = window.location.origin + window.location.pathname.replace('make.html', 'normal.html');
             const finalUrl = `${baseUrl}?name=${encodeURIComponent(t)}&from=${encodeURIComponent(f || '你的老友')}`;
             
             document.getElementById('urlDisplay').innerText = finalUrl;
