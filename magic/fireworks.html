@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 马年大吉 - 璀璨烟花</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background-color: #8B0000; /* 深红背景 */
+        }
+        canvas {
+            display: block;
+            cursor: pointer;
+        }
+        .ui-layer {
+            position: fixed;
+            top: 20px; width: 100%;
+            text-align: center;
+            color: #FFD700;
+            font-family: "Microsoft YaHei", sans-serif;
+            letter-spacing: 2px;
+            pointer-events: none;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="ui-layer">点击屏幕 领取马年祝福</div>
+    <canvas id="fireworks"></canvas>
+
+    <script>
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        
+        let particles = [];
+        let texts = [];
+        const blessings = ["马年快乐", "龙马精神", "大吉大利", "万事如意", "步步高升", "岁岁平安"];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // 烟花粒子类
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                // 爆炸速度
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 6 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1;
+                this.gravity = 0.12;
+                this.friction = 0.96;
+            }
+            update() {
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= 0.015;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // 漂浮文字类
+        class FloatingText {
+            constructor(x, y, text) {
+                this.x = x;
+                this.y = y;
+                this.text = text;
+                this.alpha = 1;
+                this.offsetY = 0;
+            }
+            update() {
+                this.offsetY -= 1.5; // 向上飘
+                this.alpha -= 0.01;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = "#FFD700";
+                ctx.font = "bold 35px 'STKaiti', '楷体', sans-serif";
+                ctx.textAlign = "center";
+                // 创建金色渐变
+                const grad = ctx.createLinearGradient(0, this.y + this.offsetY - 20, 0, this.y + this.offsetY + 10);
+                grad.addColorStop(0, "#FFF720");
+                grad.addColorStop(1, "#FF8C00");
+                ctx.fillStyle = grad;
+                ctx.fillText(this.text, this.x, this.y + this.offsetY);
+                ctx.restore();
+            }
+        }
+
+        function spawnFirework(x, y) {
+            const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+            for (let i = 0; i < 80; i++) {
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        // 点击交互
+        canvas.addEventListener('mousedown', (e) => {
+            spawnFirework(e.clientX, e.clientY);
+            const txt = blessings[Math.floor(Math.random() * blessings.length)];
+            texts.push(new FloatingText(e.clientX, e.clientY, txt));
+        });
+
+        // 自动背景烟花循环
+        function autoFire() {
+            if (Math.random() < 0.04) { // 控制频率
+                spawnFirework(Math.random() * canvas.width, Math.random() * canvas.height * 0.6);
+            }
+        }
+
+        function animate() {
+            // 关键：带透明度的填充实现“拖尾”效果
+            ctx.fillStyle = 'rgba(139, 0, 0, 0.2)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            autoFire();
+
+            // 更新粒子
+            particles = particles.filter(p => p.alpha > 0);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // 更新文字
+            texts = texts.filter(t => t.alpha > 0);
+            texts.forEach(t => {
+                t.update();
+                t.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
