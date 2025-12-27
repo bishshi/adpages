@@ -2,59 +2,115 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>定制 2026 马年贺卡</title>
-    <style>
-        body { font-family: "Microsoft YaHei", sans-serif; background: #b71c1c; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .config-card { background: #fff; color: #333; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 90%; max-width: 400px; text-align: center; }
-        h2 { color: #d32f2f; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 1rem; }
-        button { width: 100%; padding: 12px; background: #d32f2f; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #ff5252; }
-        #result { margin-top: 25px; display: none; background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px dashed #d32f2f; }
-        .link-text { word-break: break-all; font-size: 0.85rem; color: #666; margin-bottom: 15px; display: block; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>2026 马年大吉</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="config-card">
-    <h2>🐎 贺卡定制器</h2>
-    <p>输入姓名，生成 TA 的专属链接</p>
-    <input type="text" id="inputName" placeholder="例如：张三">
-    <button onclick="generateLink()">生成链接</button>
-
-    <div id="result">
-        <span class="link-text" id="linkText"></span>
-        <button style="background: #28a745;" onclick="copyLink()">一键复制链接</button>
+    <div id="countdown" onclick="handleJump('/calendar.html')" style="cursor: pointer;">
+        <div class="countdown-title">距离 2026 马年春节还有 (点击查看日历)</div>
+        <div class="countdown-timer">
+            <span id="days">00</span>天 
+            <span id="hours">00</span>时 
+            <span id="minutes">00</span>分 
+            <span id="seconds">00</span>秒
+        </div>
     </div>
-</div>
+    
+    <div id="transition-overlay"></div>
 
-<script>
-    function generateLink() {
-        const name = document.getElementById('inputName').value.trim();
-        if (!name) return alert('请输入名字哦！');
-        
-        // 获取当前域名及路径，并拼接 index.html
-        const currentPath = window.location.pathname;
-        const basePath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-        const fullUrl = window.location.origin + basePath + '/normal.html';
-        
-        // 随机生成一个简单的ID
-        const randomId = Math.random().toString(36).substr(2, 5);
-        const finalUrl = `${fullUrl}?id=${randomId}&name=${encodeURIComponent(name)}`;
-        
-        document.getElementById('linkText').innerText = finalUrl;
-        document.getElementById('result').style.display = 'block';
-    }
+    <audio id="bgMusic" loop>
+        <source src="bg.mp3" type="audio/mpeg">
+    </audio>
 
-    function copyLink() {
-        const text = document.getElementById('linkText').innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            alert('复制成功！快发给 TA 吧~');
-        }).catch(err => {
-            alert('复制失败，请手动长按复制链接。');
-        });
-    }
-</script>
+    <div id="musicBtn" onclick="toggleMusic()">
+        <span id="musicIcon">🎵</span>
+    </div>
+
+    <div id="fireworks"></div>
+
+    <div class="slider-container">
+        <div class="slider-track" id="track" style="width: 600vw;">
+            
+            <section class="page">
+                <div class="lantern">🏮</div>
+                <div class="card">
+                    <p style="letter-spacing: 2px; opacity: 0.8;">TO: 亲爱的好友</p>
+                    <span class="art-name" id="userName">好友</span> 
+                    <h2 style="font-size: 1.8rem; margin: 15px 0;">🐎 2026 丙午马年</h2>
+                    <div style="border-top: 1px solid rgba(255,215,0,0.3); padding-top: 15px;">
+                        <p>祝你：马到成功 · 一马当先</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="page">
+                <div class="card">
+                    <h3 style="font-size: 1.5rem;">✨ 龙马精神 ✨</h3>
+                    <p style="line-height: 2;">
+                        岁序更迭，华章日新<br>
+                        愿你在新的一年里<br>
+                        奔跑如风，前程万里<br>
+                        眼里有星辰，心中有骏马
+                    </p>
+                    <hr style="border: none; border-top: 1px dashed #ffd700; margin: 20px 0;">
+                    <p style="font-style: italic; color: #fff;">"愿历添新岁月，春满旧山河"</p>
+                </div>
+            </section>
+
+            <section class="page">
+                <div class="card card-scrollable">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 15px;">📜 新年寄语</h3>
+                    <div class="scroll-content" id="scrollContent">
+                        <p>亲爱的朋友：</p>
+                        <p>回首往昔，岁月的马蹄声声催人。在即将到来的2026丙午马年，我有很多话想对你说...</p>
+                        <p>愿你在这奔腾的时代里，既有策马扬鞭的勇气，也有信马由缰的从容。不仅要在事业上马到成功，更要在生活中寻得那一抹属于自己的宁静草场。</p>
+                        <p>无论世界如何变迁，希望你始终保持龙马精神，眼里有光，心中有爱，脚下有路。</p>
+                        <p>让我们一起在2026年，跑出属于我们的精彩轨迹！</p>
+                        <p style="text-align: right;">—— <span id="msgFrom">你的老友</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="page">
+                <div class="card">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 20px;">🐎 马年愿望清单</h3>
+                    <ul style="list-style: none; padding: 0; line-height: 2.5; font-size: 1.1rem;">
+                        <li>🌟 愿你“马”上有钱，财运好</li>
+                        <li>🚀 愿你“马”不停蹄，前程顺</li>
+                        <li>🍀 愿你“马”到成功，事竟成</li>
+                        <li>🍎 愿你“马”上开心，常顺遂</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="page">
+                <div class="card card-scrollable">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 15px;">🏮 留金岁月</h3>
+                    <div id="tcomment"></div>
+                </div>
+            </section>
+            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.min.js"></script>
+
+            <section class="page">
+                <div class="card">
+                    <h3 style="font-size: 1.5rem;">💌 专属礼物</h3>
+                    <p>策马扬鞭，奔向新的一年</p>
+                    <a href="javascript:void(0)" class="jump-card">点击开启惊喜</a>
+                    <div style="margin-top: 40px; font-size: 0.8rem; opacity: 0.6;">
+                        <p>—— <span id="finalFrom">某某</span> 敬上</p>
+                        <p>2026年 农历新年</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn btn-prev" onclick="moveSlide(-1)">❮</button>
+    <button class="nav-btn btn-next" onclick="moveSlide(1)">❯</button>
+
+    <script src="script.js"></script>
 </body>
 </html>
