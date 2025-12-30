@@ -5,37 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>2026 骏马奔腾 - 新年留言板</title>
     <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css" rel="stylesheet">
     <style>
         :root {
-            --gold: #f9d976;
-            --main-red: #8b0000;
-            --bg-dark: #5c0000;
+            --gold-primary: #ffd700;
+            --gold-gradient: linear-gradient(135deg, #ffd700 0%, #fdb931 50%, #d4af37 100%);
+            --red-bg: #800000;
+            --red-dark: #4a0000;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 215, 0, 0.3);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
 
-        /* 基础布局 */
+        /* --- 基础设置 --- */
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
+            height: 100%;
             overflow-x: hidden;
-            overflow-y: auto;
-            background: var(--bg-dark);
-            min-height: 100vh;
-            font-family: "STKaiti", "Microsoft YaHei", serif;
+            font-family: "Ma Shan Zheng", "STKaiti", "KaiTi", serif; /* 尝试使用毛笔字体风格，如无则回退楷体 */
+            background-color: var(--red-bg);
+            color: #fff;
         }
 
-        /* 固定背景渐变 */
-        .bg-gradient {
+        /* 引入 Google Fonts 毛笔字 (可选，提升质感) */
+        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
+
+        /* --- 背景与烟花 --- */
+        .fixed-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, var(--main-red) 0%, var(--bg-dark) 100%);
+            /* 更有质感的径向渐变 */
+            background: radial-gradient(circle at center, #a30000 0%, #5e0000 60%, #2b0000 100%);
+            z-index: -2;
+        }
+        
+        /* 增加纹理叠加 (可选) */
+        .texture-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             z-index: -1;
+            pointer-events: none;
         }
 
-        /* 烟花画布 */
         #fireworks {
             position: fixed;
             top: 0;
@@ -43,143 +60,357 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 1;
+            z-index: 0;
         }
 
-        /* 内容容器 */
-        .container {
+        /* --- 主容器 (玻璃拟态卡片) --- */
+        .main-wrapper {
             position: relative;
-            z-index: 5;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 60px;
+            padding-bottom: 80px;
+        }
+
+        .card {
             width: 90%;
-            max-width: 850px;
-            margin: 80px auto 100px;
-            padding: clamp(15px, 4vw, 30px);
-            background: rgba(139, 0, 0, 0.82);
-            border: 2px solid var(--gold);
-            border-radius: 20px;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.6);
-            backdrop-filter: blur(10px);
+            max-width: 800px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            padding: 40px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            animation: floatUp 1s ease-out;
+        }
+
+        /* 卡片四周的装饰角 */
+        .corner-decoration {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 3px solid transparent;
+            border-image: var(--gold-gradient);
+            border-image-slice: 1;
+            pointer-events: none;
+        }
+        .top-left { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .top-right { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+        .bottom-left { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+        .bottom-right { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 标题区域 --- */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .year-badge {
+            display: inline-block;
+            background: var(--gold-gradient);
+            color: #5e0000;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            font-family: sans-serif;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            margin: 10px 0;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            letter-spacing: 5px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ffecd2;
+            opacity: 0.9;
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        .horse-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 10px;
+            animation: gallop 2s infinite ease-in-out;
+            text-shadow: 0 0 20px rgba(255,215,0,0.6);
+        }
+
+        @keyframes gallop {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(-5deg); }
+        }
+
+        /* --- 灯笼升级版 --- */
+        .lantern-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 0;
+            z-index: 20;
+            pointer-events: none;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5%;
             box-sizing: border-box;
         }
 
-        header { text-align: center; margin-bottom: 30px; }
-        h1 {
-            color: var(--gold);
-            font-size: clamp(1.8rem, 6vw, 3.2rem);
-            margin: 0;
-            text-shadow: 0 0 15px rgba(249, 217, 118, 0.5);
-        }
-        .subtitle {
-            color: var(--gold);
-            opacity: 0.9;
-            margin-top: 15px;
-            font-size: clamp(0.9rem, 3vw, 1.2rem);
-        }
-
-        /* 灯笼固定装饰 */
-        .lantern-pair {
-            position: fixed;
-            top: -5px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 4%;
-            pointer-events: none;
-            z-index: 10;
-        }
-        .lantern {
-            width: clamp(45px, 12vw, 85px);
-            height: clamp(40px, 10vw, 75px);
-            background: #ff2d2d;
-            border-radius: 50% 50% 45% 45%;
-            border: 2px solid var(--gold);
-            animation: swing 3s ease-in-out infinite alternate;
+        .lantern-box {
+            position: relative;
             transform-origin: top center;
-            box-shadow: 0 5px 25px rgba(255, 45, 45, 0.4);
-        }
-        .lantern::after {
-            content: ""; position: absolute; bottom: -25px; left: 50%;
-            width: 5px; height: 25px; background: var(--gold);
+            animation: swing 4s ease-in-out infinite alternate;
         }
 
-        @keyframes swing { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+        .lantern-rope {
+            width: 2px;
+            height: 60px;
+            background: #d4af37;
+            margin: 0 auto;
+        }
 
-        /* 音乐播放器美化 */
-        .audio-player {
-            position: fixed;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 8px 20px;
-            border-radius: 50px;
-            border: 1px solid var(--gold);
+        .lantern-body {
+            width: 120px;
+            height: 95px;
+            background: radial-gradient(circle, #ff4d4d 20%, #b30000 90%);
+            border-radius: 40px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(255, 0, 0, 0.6), inset 0 0 20px rgba(255, 200, 0, 0.3);
+            border: 2px solid #d4af37;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            color: #d4af37;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        /* 灯笼上下盖 */
+        .lantern-body::before, .lantern-body::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 12px;
+            background: #d4af37;
+            border-radius: 4px;
+        }
+        .lantern-body::before { top: -6px; }
+        .lantern-body::after { bottom: -6px; }
+
+        /* 流苏 */
+        .tassel {
+            width: 4px;
+            height: 60px;
+            background: #e60000;
+            margin: 5px auto 0;
+            position: relative;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+        }
+
+        /* 两个灯笼的延时 */
+        .lantern-box:nth-child(2) {
+            animation-delay: -2s;
+            animation-duration: 4.5s;
+        }
+
+        @keyframes swing {
+            from { transform: rotate(-8deg); }
+            to { transform: rotate(8deg); }
+        }
+
+        /* --- 播放器优化 --- */
+        .music-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(5px);
+            border: 1px solid var(--gold-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            transition: all 0.3s;
         }
-        audio { height: 30px; width: 220px; filter: invert(20%) sepia(90%) saturate(1500%) hue-rotate(350deg); }
+        .music-control:hover {
+            transform: scale(1.1);
+            background: rgba(94, 0, 0, 0.8);
+        }
+        .music-icon {
+            font-size: 24px;
+            color: var(--gold-primary);
+            animation: spin 4s linear infinite;
+        }
+        .music-icon.paused {
+            animation-play-state: paused;
+            opacity: 0.6;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Twikoo 自定义适配 */
+        /* --- Twikoo 深度适配 (核心 CSS 覆盖) --- */
         #tcomment {
-            background: rgba(255, 255, 255, 0.96);
-            padding: 20px;
-            border-radius: 12px;
-            color: #333;
+            position: relative;
+            z-index: 5;
+        }
+        /* 评论框输入区域 */
+        .twikoo .el-input__inner, 
+        .twikoo .el-textarea__inner {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(255, 215, 0, 0.3) !important;
+            color: #fff !important;
+            border-radius: 8px !important;
+        }
+        .twikoo .el-input__inner:focus, 
+        .twikoo .el-textarea__inner:focus {
+            border-color: var(--gold-primary) !important;
+        }
+        /* 按钮 */
+        .twikoo .tk-submit-action-icon,
+        .twikoo .tk-submit-action-icon span {
+            color: var(--gold-primary) !important;
+        }
+        .twikoo .el-button--primary {
+            background: var(--gold-gradient) !important;
+            border: none !important;
+            color: #5e0000 !important;
+            font-weight: bold;
+        }
+        /* 评论文字 */
+        .twikoo .tk-content {
+            color: #ffecd2 !important;
+        }
+        .twikoo .tk-nick {
+            color: var(--gold-primary) !important;
+        }
+        .twikoo .tk-time {
+            color: #aaa !important;
+        }
+        /* 评论卡片背景 (如果需要) */
+        .twikoo .tk-comment {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
         }
 
-        /* 滚动条美化 */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
-
+        /* --- 移动端适配 --- */
         @media screen and (max-width: 600px) {
-            .container { margin-top: 60px; }
-            audio { width: 180px; }
+            .card { width: 95%; padding: 20px 15px; }
+            h1 { font-size: 2.8rem; }
+            .lantern-body { width: 80px; height: 65px; font-size: 1.8rem; }
+            .lantern-rope { height: 40px; }
+            .music-control { bottom: 20px; right: 20px; width: 40px; height: 40px; }
+            .music-icon { font-size: 18px; }
         }
     </style>
 </head>
 <body>
     <script src="https://cdn.jsdelivr.net/gh/bishshi/wechat-detect/wechat-detect.js"></script>
 
-    <div class="bg-gradient"></div>
+    <div class="fixed-bg"></div>
+    <div class="texture-overlay"></div>
     <canvas id="fireworks"></canvas>
 
-    <div class="lantern-pair">
-        <div class="lantern"></div>
-        <div class="lantern" style="animation-delay: -1.5s;"></div>
+    <div class="lantern-container">
+        <div class="lantern-box">
+            <div class="lantern-rope"></div>
+            <div class="lantern-body">26</div>
+            <div class="tassel"></div>
+        </div>
+        <div class="lantern-box">
+            <div class="lantern-rope"></div>
+            <div class="lantern-body">福</div>
+            <div class="tassel"></div>
+        </div>
     </div>
 
-    <div class="container">
-        <header>
-            <h1>🐎 2026 骏马奔腾 🐎</h1>
-            <p class="subtitle">金马迎新春，万事皆如意</p>
-            <p style="font-size: 0.9rem; color: #ffcccb; margin-top: 5px;">辞旧灵蛇随岁去，接福骏马带春来</p>
-        </header>
+    <div class="main-wrapper">
+        <div class="card">
+            <div class="corner-decoration top-left"></div>
+            <div class="corner-decoration top-right"></div>
+            <div class="corner-decoration bottom-left"></div>
+            <div class="corner-decoration bottom-right"></div>
 
-        <div id="tcomment"></div>
+            <header>
+                <div class="horse-icon">🐎</div>
+                <div class="year-badge">2026 丙午马年</div>
+                <h1>骏马奔腾</h1>
+                <p class="subtitle">金蹄踏雪报春来 · 万事如意展宏图</p>
+                <div style="margin-top: 20px; border-bottom: 1px solid rgba(255,215,0,0.3); width: 60%; margin-left: auto; margin-right: auto;"></div>
+            </header>
+
+            <div id="tcomment"></div>
+        </div>
     </div>
 
-    <div class="audio-player">
-        <span style="color: var(--gold); font-size: 14px;">🎵</span>
-        <audio controls loop autoplay>
+    <div class="music-control" onclick="toggleAudio()">
+        <i class="fas fa-music music-icon"></i>
+        <audio id="bgm" loop autoplay>
             <source src="bg.mp3" type="audio/mpeg">
-            您的浏览器不支持音频播放
         </audio>
     </div>
 
     <script>
-        // 1. 初始化 Twikoo 并载入指定参数
+        // 1. 初始化 Twikoo
         twikoo.init({
             envId: 'https://comment.biss.click',
             el: '#tcomment',
             path: '2026-greeting',
-            placeholder: '在此留下你的新年祝福吧...',
+            placeholder: '写下你的新年愿望，让好运随着烟花绽放...',
         });
 
-        // 2. 烟花特效代码
+        // 2. 音乐控制逻辑
+        const audio = document.getElementById('bgm');
+        const musicIcon = document.querySelector('.music-icon');
+        let isPlaying = true;
+
+        function toggleAudio() {
+            if (isPlaying) {
+                audio.pause();
+                musicIcon.classList.add('paused');
+            } else {
+                audio.play();
+                musicIcon.classList.remove('paused');
+            }
+            isPlaying = !isPlaying;
+        }
+        
+        // 尝试自动播放
+        document.addEventListener('click', function() {
+            if (audio.paused && isPlaying) {
+                audio.play();
+                musicIcon.classList.remove('paused');
+            }
+        }, { once: true });
+
+        // 3. 升级版烟花逻辑 (带拖尾效果)
         const canvas = document.getElementById('fireworks');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -193,49 +424,61 @@
 
         class Particle {
             constructor(x, y, color) {
-                this.x = x; this.y = y; this.color = color;
+                this.x = x; 
+                this.y = y; 
+                this.color = color;
+                // 爆炸速度更快
                 const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * (window.innerWidth < 600 ? 3 : 5) + 2;
+                const speed = Math.random() * 6 + 2; 
                 this.vx = Math.cos(angle) * speed;
                 this.vy = Math.sin(angle) * speed;
                 this.alpha = 1;
+                this.decay = Math.random() * 0.015 + 0.01;
+                this.gravity = 0.08;
             }
             draw() {
                 ctx.globalAlpha = this.alpha;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, 1.8, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
                 ctx.fillStyle = this.color;
                 ctx.fill();
             }
             update() {
-                this.x += this.vx; this.y += this.vy;
-                this.vy += 0.05; this.alpha -= 0.012;
+                this.x += this.vx; 
+                this.y += this.vy;
+                this.vy += this.gravity; // 重力效果
+                this.alpha -= this.decay;
             }
         }
 
-        function spawn() {
+        function spawnFireworks() {
             const x = Math.random() * canvas.width;
-            const y = Math.random() * canvas.height * 0.45;
-            const colors = ['#FFD700', '#FF4D4D', '#FFFFFF', '#FFA500'];
-            const count = window.innerWidth < 600 ? 20 : 35;
-            for(let i=0; i<count; i++) 
-                particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
+            const y = Math.random() * (canvas.height * 0.6); // 烟花主要在上半部分爆炸
+            // 金色、红色、白色、橙色
+            const colors = ['#FFD700', '#FF4500', '#FFFFFF', '#FF8C00', '#ffeb3b']; 
+            const particleCount = 60;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            for(let i=0; i<particleCount; i++) {
+                particles.push(new Particle(x, y, color));
+            }
         }
 
         function loop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // 关键：使用半透明填充来实现“拖尾”效果
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.globalCompositeOperation = 'lighter';
+            
             particles = particles.filter(p => p.alpha > 0);
             particles.forEach(p => { p.update(); p.draw(); });
-            if(Math.random() < 0.05) spawn();
+            
+            if(Math.random() < 0.04) spawnFireworks();
             requestAnimationFrame(loop);
         }
         loop();
-
-        // 解决部分浏览器禁止自动播放音乐的问题
-        document.addEventListener('click', function() {
-            const audio = document.querySelector('audio');
-            if (audio.paused) audio.play();
-        }, { once: true });
     </script>
 </body>
 </html>
