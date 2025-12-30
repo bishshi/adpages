@@ -2,84 +2,174 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>标准红头文件 - 留言区</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026新年快乐！</title>
     <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.min.js"></script>
     <style>
-        /* 原有的红头文件样式 */
+        /* 基础样式优化 */
         body {
-            background-color: #f0f2f5; /* 稍微深一点的背景，突出纸张 */
+            background-color: #f0f2f5;
             margin: 0;
-            padding: 40px 0;
+            padding: 20px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
         }
 
+        /* 响应式 A4 容器 */
         .page {
             background-color: white;
             width: 210mm;
-            min-height: 297mm; /* 改为 min-height，防止内容溢出 */
+            min-height: 297mm;
             padding: 37mm 28mm;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
             box-sizing: border-box;
             position: relative;
-            font-family: 'FS_GB2312', "仿宋", serif;
+            /* 字体回退序列，尽量保证公文质感 */
+            font-family: 'FS_GB2312', "仿宋_GB2312", "仿宋", "STFangsong", serif;
+            word-break: break-all;
         }
 
-        /* 红头相关样式（简写参考上一条回复） */
-        .red-header { color: #ff0000; font-family: "方正小标宋简体", serif; font-size: 52pt; text-align: center; margin-bottom: 5mm; }
-        .doc-number { font-size: 16pt; text-align: center; margin-bottom: 2mm; }
-        .red-line { border-bottom: 1.5pt solid #ff0000; margin-bottom: 10mm; }
-        .title { font-size: 22pt; font-family: "方正小标宋简体", serif; text-align: center; font-weight: bold; margin-bottom: 10mm; }
-        .content { font-size: 16pt; line-height: 28pt; text-align: justify; }
-        .content p { text-indent: 2em; margin: 0; }
+        /* 移动端适配：如果屏幕小于 210mm，自动缩放 */
+        @media screen and (max-width: 210mm) {
+            body { padding: 0; }
+            .page {
+                width: 100%;
+                padding: 20px;
+                min-height: auto;
+                box-shadow: none;
+            }
+        }
 
-        /* --- Twikoo 留言区专属样式 --- */
+        /* 红头相关样式 */
+        .red-header { 
+            color: #ff0000; 
+            font-family: "方正小标宋简体", "宋体-方正超大字符集", "SimSun", serif; 
+            font-size: 52pt; 
+            text-align: center; 
+            margin-bottom: 5mm; 
+            letter-spacing: 2px;
+        }
+        .doc-number { 
+            font-size: 16pt; 
+            text-align: center; 
+            margin-bottom: 2mm; 
+            font-family: "SimSun", serif;
+        }
+        .red-line { border-bottom: 1.5pt solid #ff0000; margin-bottom: 10mm; }
+        
+        .title { 
+            font-size: 22pt; 
+            font-family: "方正小标宋简体", "SimHei", sans-serif; 
+            text-align: center; 
+            font-weight: bold; 
+            margin-bottom: 15mm; 
+            line-height: 1.4;
+        }
+
+        .content { 
+            font-size: 16pt; 
+            line-height: 28pt; 
+            text-align: justify; 
+        }
+        .content p { text-indent: 2em; margin: 0 0 10pt 0; }
+
+        /* 落款与日期 */
+        .issuing-authority {
+            margin-top: 30mm;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            padding-right: 10mm;
+            position: relative;
+        }
+        .authority-name { font-size: 16pt; margin-bottom: 5mm; }
+        .issue-date { font-size: 16pt; font-family: "SimSun", serif; }
+
+        /* 仿真印章 */
+        .seal {
+            position: absolute;
+            width: 40mm;
+            height: 40mm;
+            border: 3px solid rgba(255, 0, 0, 0.7);
+            border-radius: 50%;
+            color: rgba(255, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+            font-size: 10pt;
+            transform: rotate(-15deg);
+            right: 5mm;
+            top: -10mm;
+            pointer-events: none;
+            user-select: none;
+            border-style: double;
+            border-width: 4px;
+        }
+        .seal::after {
+            content: "2026新年快乐专用章";
+            padding: 10px;
+        }
+
+        /* --- Twikoo 留言区优化 --- */
         #comment-container {
-            width: 210mm; /* 与公文宽度保持一致 */
+            width: 210mm;
             margin-top: 30px;
             background: #fff;
-            padding: 20px 40px;
+            padding: 30px 40px;
             box-shadow: 0 0 10px rgba(0,0,0,0.05);
             border-radius: 8px;
             box-sizing: border-box;
+        }
+        @media screen and (max-width: 210mm) {
+            #comment-container { width: 100%; border-radius: 0; }
         }
 
         /* 打印时隐藏留言区 */
         @media print {
             #comment-container { display: none; }
             body { padding: 0; background: white; }
+            .page { box-shadow: none; }
         }
     </style>
 </head>
 <body>
 
 <div class="page">
-    <div class="red-header">二〇二六年春节专题文件</div>
-    <div class="doc-number">专发〔2026〕1 号</div>
+    <div class="red-header">春节专题文件</div>
+    <div class="doc-number">马年〔2026〕1 号</div>
     <div class="red-line"></div>
-    <div class="title">关于在公文系统中集成<br>互动留言功能的通知</div>
+    
+    <div class="title">关于向全体好友致以<br>二〇二六年新春祝福的通知</div>
+    
     <div class="content">
-        各级有关部门：
-        <p>为进一步提升公文流转效率，增强意见反馈的实时性，现决定在 HTML 电子公文展示页下方统一配置 Twikoo 留言插件。</p>
-        <p>请各单位在收到本通知后，根据指引完成环境配置，确保留言功能安全、稳定运行。</p>
+        <p>各级亲朋好友、合作伙伴及屏幕前的你：</p>
+        <p>值此二〇二六年蛇年来临之际，为贯彻落实“快乐至上”的核心价值观，进一步提升全体人员的幸福指数，现将有关事项通知如下：</p>
+        <p>一、各单位要切实做好“吃好喝好”保障工作，严禁在假期期间进行任何形式的emo。</p>
+        <p>二、请各有关人员在收到本通知后，务必在下方留言区留下你的新年愿望，由后台系统统一收集并祝愿其实现。</p>
+        <p>三、祝大家在新的一年里，身体健康，万事如意，所得皆所愿，所行化坦途！</p>
+    </div>
+
+    <div class="issuing-authority">
+        <div class="authority-name">新年快乐办公室</div>
+        <div class="issue-date">2026年1月1日</div>
     </div>
 </div>
 
 <div id="comment-container">
-    <h3 style="border-left: 4px solid #ff0000; padding-left: 10px; font-family: sans-serif;">意见反馈</h3>
+    <h3 style="border-left: 4px solid #ff0000; padding-left: 10px; font-family: sans-serif; color: #333;">意见反馈（留言板）</h3>
     <div id="tcomment"></div>
 </div>
 
 <script>
-    // 3. 初始化 Twikoo
     twikoo.init({
-        envId: 'https://comment.biss.click', // 替换为你在腾讯云或 Vercel 部署的 envId
+        envId: 'https://comment.biss.click', 
         el: '#tcomment',
-        // region: 'ap-guangzhou', // 腾讯云部署需配置 region
-        // path: location.pathname, // 可选，区分页面的路径
         path: '2026-greeting', 
-        placeholder: '在此留下你的新年祝福吧...',
+        placeholder: '请在此输入您的反馈意见或新年祝福...',
     });
 </script>
 
