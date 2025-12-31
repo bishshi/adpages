@@ -127,6 +127,19 @@ body, html {
     text-align: center; 
 }
 
+/* --- 新增：新年寄语段落缩进样式 --- */
+.scroll-content p {
+    text-indent: 2em;      /* 首行缩进两个字符 */
+    text-align: justify;   /* 两端对齐，排版更整齐 */
+    margin: 8px 0;         /* 微调段落间距，防止文字太挤 */
+}
+
+/* 可选：让“称呼”和“落款”不缩进，符合书信规范 */
+.scroll-content p:first-child, 
+.scroll-content p:last-child {
+    text-indent: 0;
+}
+
 /* 卡片样式 */
 .card {
     background: var(--glass-bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -205,4 +218,29 @@ body, html {
 .card-scrollable {
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
+}
+
+/* --- 新增：美化留言板(及所有可滚动卡片)的滚动条 --- */
+
+/* 1. 设置滚动条的整体宽度 */
+.card-scrollable::-webkit-scrollbar {
+    width: 4px; /* 设为4px，比默认的细，显得精致 */
+}
+
+/* 2. 设置滚动滑块 (原本是灰色，改为金色) */
+.card-scrollable::-webkit-scrollbar-thumb {
+    background: var(--accent-gold); /* 调用你的主题金色变量 */
+    border-radius: 10px;            /* 圆角处理，看起来更柔和 */
+}
+
+/* 3. 设置滚动轨道 (背景) */
+.card-scrollable::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1); /* 微微的深色背景，或者直接设为 transparent 透明 */
+    border-radius: 10px;
+}
+
+/* 4. 兼容火狐浏览器 (可选) */
+.card-scrollable {
+    scrollbar-width: thin;          /* 瘦滚动条 */
+    scrollbar-color: var(--accent-gold) transparent; 
 }
