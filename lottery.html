@@ -13,8 +13,8 @@
     <div class="lottery-wrapper">
         <div class="main-card">
             <div style="font-size: 60px;">🐎</div>
-            <h1 class="title-gold">马年好运签</h1>
-            <p id="welcomeMsg" style="color: #fff; margin-bottom: 30px; letter-spacing: 1px;">2026 丙午年 · 运势抽取</p>
+            <h1 class="title-gold">新年抽奖</h1>
+            <p id="welcomeMsg" style="color: #fff; margin-bottom: 30px; letter-spacing: 1px;">2026 丙午年 · 新年抽奖</p>
             
             <button class="draw-btn" id="drawBtn" onclick="handleDraw()">开启好运</button>
             
@@ -27,7 +27,7 @@
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content-wrapper">
             <div id="captureArea">
-                <h3 style="color: #fff; margin: 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px;">🧧 上上签 🧧</h3>
+                <h3 style="color: #fff; margin: 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px;">🧧 抽奖结果 🧧</h3>
                 <div id="prizeContainer" style="margin-top: 20px;">
                     <span class="prize-title" id="friendNameDisplay">To 亲爱的朋友：</span>
                     <span class="prize-text" id="prizeResult">正在抽取...</span>
@@ -35,14 +35,11 @@
                 <p style="color: rgba(255,255,255,0.8); font-size: 0.85rem; line-height: 1.6; margin: 0;">
                     祝愿您在2026年<br>策马扬鞭，前程似锦！
                 </p>
-                <div style="margin-top:15px; font-size: 0.7rem; color: rgba(255,255,255,0.4);">长按保存图片分享</div>
+                <div style="margin-top:15px; font-size: 0.7rem; color: rgba(255,255,255,0.4);">保存图片分享</div>
             </div>
-
             <div class="btn-group">
                 <button class="action-btn close-btn" onclick="closeModal()">关闭</button>
-                <button class="action-btn save-btn" onclick="saveImage()">
-                    <span>📥</span> 保存图片
-                </button>
+                <button class="action-btn save-btn" onclick="saveImage()"><span>📥</span> 保存图片</button>
             </div>
         </div>
     </div>
