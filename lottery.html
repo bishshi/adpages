@@ -5,19 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>2026 马年好运抽奖</title>
     <link rel="stylesheet" href="lottery.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/gh/bishshi/wechat-detect/wechat-detect.js"></script>
-
-    <div id="fireworks"></div>
+    <div id="fireworks-container"></div>
 
     <div class="lottery-wrapper">
         <div class="main-card">
-            <div style="font-size: 50px;">🐎</div>
-            <h1 class="title-gold">马年好运抽奖</h1>
-            <p id="welcomeMsg" style="color: #fff; margin-bottom: 30px;">策马扬鞭开启一年好运</p>
+            <div style="font-size: 60px;">🐎</div>
+            <h1 class="title-gold">马年好运签</h1>
+            <p id="welcomeMsg" style="color: #fff; margin-bottom: 30px; letter-spacing: 1px;">2026 丙午年 · 运势抽取</p>
             
-            <button class="draw-btn" id="drawBtn" onclick="handleDraw()">即刻抽奖</button>
+            <button class="draw-btn" id="drawBtn" onclick="handleDraw()">开启好运</button>
             
             <div style="margin-top: 30px;">
                 <a id="backToCard" href="#" style="color: var(--accent-gold); text-decoration: none; font-size: 0.9rem; opacity: 0.7;">← 返回贺卡</a>
@@ -26,16 +25,25 @@
     </div>
 
     <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-content">
-            <h3 style="color: #fff; margin: 0;">🎊 恭喜中奖 🎊</h3>
-            <div id="prizeContainer">
-                <span class="prize-title" id="friendNameDisplay">亲爱的朋友：</span>
-                <span class="prize-text" id="prizeResult">正在抽取...</span>
+        <div class="modal-content-wrapper">
+            <div id="captureArea">
+                <h3 style="color: #fff; margin: 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px;">🧧 上上签 🧧</h3>
+                <div id="prizeContainer" style="margin-top: 20px;">
+                    <span class="prize-title" id="friendNameDisplay">To 亲爱的朋友：</span>
+                    <span class="prize-text" id="prizeResult">正在抽取...</span>
+                </div>
+                <p style="color: rgba(255,255,255,0.8); font-size: 0.85rem; line-height: 1.6; margin: 0;">
+                    祝愿您在2026年<br>策马扬鞭，前程似锦！
+                </p>
+                <div style="margin-top:15px; font-size: 0.7rem; color: rgba(255,255,255,0.4);">长按保存图片分享</div>
             </div>
-            <p style="color: rgba(255,255,255,0.8); font-size: 0.85rem; line-height: 1.6;">
-                祝您在2026丙午马年<br>龙马精神，万事胜意！
-            </p>
-            <button class="close-btn" onclick="closeModal()">收下好运</button>
+
+            <div class="btn-group">
+                <button class="action-btn close-btn" onclick="closeModal()">关闭</button>
+                <button class="action-btn save-btn" onclick="saveImage()">
+                    <span>📥</span> 保存图片
+                </button>
+            </div>
         </div>
     </div>
 
@@ -44,98 +52,6 @@
     </audio>
     <div id="musicBtn" onclick="toggleMusic()"><span id="musicIcon">🎵</span></div>
 
-    <script>
-        // --- 参数解析与初始化 ---
-        let currentFriendName = "好朋友";
-        
-        function initParams() {
-            const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
-            const name = params.get('name');
-
-            if (id) {
-                document.getElementById('backToCard').href = `https://newyearpages.biss.click/2026-${id}.html`;
-            } else {
-                document.getElementById('backToCard').style.display = 'none';
-            }
-
-            if (name) {
-                currentFriendName = decodeURIComponent(name);
-                document.getElementById('welcomeMsg').innerText = `祝 ${currentFriendName} 马年大吉！`;
-                document.getElementById('friendNameDisplay').innerText = `${currentFriendName} 的新年礼是：`;
-            }
-        }
-
-        // --- 抽奖逻辑 ---
-        const prizes = [
-            { name: "🍎 一生平安喜乐", weight: 40 },
-            { name: "🧧 锦鲤大红包", weight: 10 },
-            { name: "🐎 马到成功符", weight: 25 },
-            { name: "💰 财源滚滚来", weight: 20 },
-            { name: "⭐ 神秘终极大奖", weight: 5 }
-        ];
-
-        function handleDraw() {
-            const btn = document.getElementById('drawBtn');
-            btn.disabled = true;
-            btn.innerText = "好运抽取中...";
-
-            setTimeout(() => {
-                const total = prizes.reduce((s, p) => s + p.weight, 0);
-                let random = Math.random() * total;
-                let selected = prizes[0].name;
-                
-                for (const p of prizes) {
-                    if (random < p.weight) {
-                        selected = p.name;
-                        break;
-                    }
-                    random -= p.weight;
-                }
-
-                document.getElementById('prizeResult').innerText = selected;
-                document.getElementById('modalOverlay').classList.add('active');
-                btn.disabled = false;
-                btn.innerText = "再次抽奖";
-            }, 1000);
-        }
-
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
-        }
-
-        // --- 烟花 & 音乐 ---
-        function createFirework() {
-            const container = document.getElementById('fireworks');
-            const x = Math.random() * window.innerWidth;
-            const color = ['#FFD700', '#FF4500', '#FFFFFF'][Math.floor(Math.random()*3)];
-            for (let i = 0; i < 15; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.style.left = x + 'px';
-                p.style.backgroundColor = color;
-                p.style.setProperty('--tx', (Math.random() * 240 - 120) + 'px');
-                p.style.setProperty('--ty', (Math.random() * -300 - 50) + 'px');
-                container.appendChild(p);
-                setTimeout(() => p.remove(), 2000);
-            }
-        }
-        setInterval(createFirework, 800);
-
-        const audio = document.getElementById('bgMusic');
-        function toggleMusic() {
-            if (audio.paused) { 
-                audio.play(); 
-                document.getElementById('musicIcon').style.animation = 'rotating 2s linear infinite'; 
-            } else { 
-                audio.pause(); 
-                document.getElementById('musicIcon').style.animation = 'none'; 
-            }
-        }
-        document.addEventListener('click', () => { if(audio.paused) toggleMusic(); }, {once: true});
-
-        // 启动初始化
-        initParams();
-    </script>
+    <script src="lottery.js"></script>
 </body>
 </html>

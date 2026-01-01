@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新年好运签 - 珍藏版</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-red: #D93A3A;
+            --dark-red: #8B0000;
+            --gold: #FFD700;
+            --bamboo-light: #f3dcb0;
+            --bamboo-dark: #dcb36d;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "PingFang SC", "Kaiti", serif;
+            background: radial-gradient(circle at center, #8B0000 0%, #2b0c0c 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* 防止移动端长按弹出菜单影响体验 */
+            -webkit-touch-callout: none;
+            user-select: none;
+        }
+
+        /* ---------------- 背景氛围 ---------------- */
+        .bg-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(30deg, #ffffff05 12%, transparent 12.5%, transparent 87%, #ffffff05 87.5%, #ffffff05),
+                linear-gradient(150deg, #ffffff05 12%, transparent 12.5%, transparent 87%, #ffffff05 87.5%, #ffffff05);
+            background-size: 80px 140px;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ---------------- 3D 签筒容器 ---------------- */
+        .pot-container {
+            position: relative;
+            width: 180px;
+            height: 260px;
+            margin-bottom: 40px;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+
+        /* 签筒本体 */
+        .fortune-pot {
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            width: 140px;
+            height: 200px;
+            background: linear-gradient(90deg, #2e1a16 0%, #5d4037 15%, #8d6e63 40%, #5d4037 60%, #2e1a16 100%);
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 25px 35px rgba(0,0,0,0.7);
+            z-index: 10;
+        }
+
+        .fortune-pot::before {
+            content: '';
+            position: absolute;
+            top: -10px; left: 0; width: 100%; height: 20px;
+            background: radial-gradient(ellipse at center, #1a0f0d 40%, #3e2723 100%);
+            border-radius: 50%;
+            border: 3px solid #6d4c41;
+            box-sizing: border-box;
+            z-index: -1;
+        }
+        
+        .pot-rim-front {
+            position: absolute;
+            top: -10px; left: 0; width: 100%; height: 20px;
+            border-radius: 50%;
+            border-bottom: 4px solid #4e342e;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .pot-label {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            width: 60px; height: 60px;
+            background: #D93A3A;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+            display: flex; justify-content: center; align-items: center;
+            border: 1px solid #FFD700;
+        }
+        
+        .pot-label span {
+            transform: rotate(-45deg);
+            color: #FFD700;
+            font-size: 36px;
+            font-weight: bold;
+            font-family: "Kaiti", serif;
+        }
+
+        /* ---------------- 仿真竹签 ---------------- */
+        .stick-group {
+            position: absolute;
+            top: -30px; left: 20px;
+            width: 140px; height: 200px;
+            z-index: 5;
+            transform-style: preserve-3d;
+        }
+
+        .stick {
+            position: absolute;
+            width: 10px; height: 180px; bottom: 20px;
+            border-radius: 1px 1px 0 0;
+            background: linear-gradient(to bottom, #c62828 0%, #b71c1c 8%, transparent 8%),
+                        repeating-linear-gradient(90deg, var(--bamboo-dark) 0px, var(--bamboo-light) 2px, var(--bamboo-dark) 4px);
+            box-shadow: 1px 0 2px rgba(0,0,0,0.3);
+            transform-origin: bottom center;
+        }
+
+        .stick::after {
+            content: '::::::'; color: #5d4037; font-size: 6px;
+            writing-mode: vertical-rl; position: absolute; top: 20px; left: 1px; opacity: 0.7; letter-spacing: 2px;
+        }
+
+        /* 签子排布 */
+        .stick:nth-child(1) { left: 30px; height: 170px; transform: rotate(-15deg) translateZ(-20px); filter: brightness(0.6); }
+        .stick:nth-child(2) { left: 50px; height: 165px; transform: rotate(-5deg) translateZ(-20px); filter: brightness(0.6); }
+        .stick:nth-child(3) { left: 70px; height: 175px; transform: rotate(5deg) translateZ(-20px); filter: brightness(0.6); }
+        .stick:nth-child(4) { left: 90px; height: 168px; transform: rotate(15deg) translateZ(-20px); filter: brightness(0.6); }
+        .stick:nth-child(5) { left: 35px; height: 175px; transform: rotate(-10deg) translateZ(-10px); filter: brightness(0.8); }
+        .stick:nth-child(6) { left: 55px; height: 180px; transform: rotate(0deg) translateZ(-10px); filter: brightness(0.8); }
+        .stick:nth-child(7) { left: 75px; height: 172px; transform: rotate(8deg) translateZ(-10px); filter: brightness(0.8); }
+        .stick:nth-child(8) { left: 95px; height: 178px; transform: rotate(18deg) translateZ(-10px); filter: brightness(0.8); }
+        .stick:nth-child(9) { left: 40px; height: 185px; transform: rotate(-6deg); z-index: 2; }
+        .stick:nth-child(10) { left: 60px; height: 190px; transform: rotate(2deg); z-index: 3; }
+        .stick:nth-child(11) { left: 80px; height: 182px; transform: rotate(10deg); z-index: 2; }
+        .stick:nth-child(12) { left: 65px; height: 175px; transform: rotate(-3deg); z-index: 1; }
+
+        /* 结果签 */
+        .result-stick {
+            position: absolute; left: 65px; bottom: 30px;
+            width: 14px; height: 210px; z-index: 4;
+            background: linear-gradient(to bottom, #d32f2f 0%, #b71c1c 10%, transparent 10%),
+                        linear-gradient(90deg, #fceabb 0%, #fccd4d 50%, #fceabb 100%);
+            border-radius: 2px 2px 0 0;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            transform: translateY(0); display: none;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .result-stick::after {
+            content: "上上签"; writing-mode: vertical-rl;
+            position: absolute; top: 25px; left: 50%; transform: translateX(-50%);
+            font-size: 10px; font-weight: bold; color: #b71c1c; font-family: "Kaiti";
+        }
+        .result-stick.show { display: block; transform: translateY(-130px) scale(1.1); }
+
+        .shake-animation { animation: shake-hard 0.6s ease-in-out infinite; }
+        @keyframes shake-hard {
+            0% { transform: rotate(0deg) translateY(0); }
+            20% { transform: rotate(-8deg) translateY(-5px); }
+            40% { transform: rotate(5deg) translateY(5px); }
+            60% { transform: rotate(-8deg) translateY(-5px); }
+            80% { transform: rotate(5deg) translateY(5px); }
+            100% { transform: rotate(0deg) translateY(0); }
+        }
+
+        .btn-draw {
+            margin-top: 20px;
+            background: linear-gradient(to bottom, #FFD700, #FFA000);
+            border: 2px solid #FFF8E1;
+            padding: 15px 60px;
+            font-size: 20px;
+            border-radius: 50px;
+            color: #8B0000;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+            transition: transform 0.1s;
+        }
+        .btn-draw:active { transform: scale(0.96); }
+        .btn-draw:disabled { filter: grayscale(1); cursor: not-allowed; }
+
+        /* ---------------- 结果弹窗 & 卡片 ---------------- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none; justify-content: center; align-items: center;
+            z-index: 100; backdrop-filter: blur(8px);
+        }
+        .modal-overlay.active { display: flex; animation: modalIn 0.4s ease-out; }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        /* 卡片本身，用于截图 */
+        .fortune-card {
+            background: #FFF9E6;
+            width: 80%;
+            max-width: 300px;
+            padding: 40px 30px; /* 增加内边距让截图更好看 */
+            border-radius: 12px;
+            text-align: center;
+            border: 4px solid #b71c1c;
+            position: relative;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23b71c1c' fill-opacity='0.03'%3E%3Ccircle cx='2' cy='2' r='1'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .fortune-header { font-size: 38px; color: #b71c1c; font-family: "Kaiti", serif; margin: 15px 0; font-weight: bold; }
+        .fortune-text { font-size: 18px; color: #5d4037; line-height: 1.6; margin-bottom: 30px; }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+
+        .btn-save {
+            background: #D93A3A;
+            color: #FFD700;
+        }
+        .btn-save:hover { background: #b71c1c; }
+
+        .btn-close {
+            background: transparent;
+            border: 1px solid #D93A3A;
+            color: #D93A3A;
+        }
+        .btn-close:hover { background: #ffe6e6; }
+
+        /* 二维码占位符（仅在截图时显示，增加仪式感） */
+        .qr-placeholder {
+            display: none;
+            margin-top: 20px;
+            border-top: 1px dashed #ccc;
+            padding-top: 10px;
+            font-size: 12px;
+            color: #999;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-pattern"></div>
+    <audio id="shakeSound" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3" preload="auto"></audio>
+
+    <div class="container">
+        <div class="pot-container" id="potWrapper">
+            <div class="stick-group">
+                <div class="stick"></div><div class="stick"></div><div class="stick"></div><div class="stick"></div>
+                <div class="stick"></div><div class="stick"></div><div class="stick"></div><div class="stick"></div>
+                <div class="stick"></div><div class="stick"></div><div class="stick"></div><div class="stick"></div>
+                <div class="result-stick" id="resultStick"></div>
+            </div>
+            <div class="pot-rim-front"></div>
+            <div class="fortune-pot">
+                <div class="pot-label"><span>福</span></div>
+            </div>
+        </div>
+
+        <h1 style="color:#FFF; font-family:'Kaiti'; font-weight:normal; text-shadow:0 2px 4px rgba(0,0,0,0.5);">所求皆如愿</h1>
+        <button class="btn-draw" id="drawBtn" onclick="startShake()">诚心求签</button>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="fortune-card" id="cardToSave">
+            <div style="font-size:14px; color:#b71c1c; margin-bottom:5px; opacity:0.8;">新年运势</div>
+            <div style="font-size:20px; font-weight:bold; color:#d93a3a; border-bottom:1px solid #ecc; padding-bottom:10px; display:inline-block;">上上签</div>
+            
+            <div class="fortune-header" id="resTitle">心想事成</div>
+            <div class="fortune-text" id="resText"></div>
+
+            <div class="qr-placeholder" id="qrMark">
+                已收下此祝福<br>2025 新年大吉
+            </div>
+            
+            <div class="btn-group" id="btnGroup">
+                <button class="action-btn btn-save" onclick="saveFortune()">保存吉言</button>
+                <button class="action-btn btn-close" onclick="closeModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fortunes = [
+            { title: "财运亨通", text: "钱兔似锦去，龙腾虎跃来。\n正财稳健，偏财惊喜，荷包满满。" },
+            { title: "事业高升", text: "直挂云帆济沧海。\n工作中将有重大突破，升职加薪，独当一面。" },
+            { title: "身体安康", text: "身心无挂碍，自在乐逍遥。\n吃得香睡得好，无病无灾，活力无限。" },
+            { title: "良缘美满", text: "愿得一心人，白首不相离。\n爱意流转，亲密无间，所有的等待都值得。" },
+            { title: "学业有成", text: "下笔如有神。\n思维敏捷，逢考必过，金榜题名指日可待。" },
+            { title: "贵人相助", text: "出门遇贵人。\n困惑时有人指点，困难时有人帮衬，路路畅通。" }
+        ];
+
+        const wrapper = document.getElementById('potWrapper');
+        const resultStick = document.getElementById('resultStick');
+        const modal = document.getElementById('modal');
+        const btn = document.getElementById('drawBtn');
+        const sound = document.getElementById('shakeSound');
+        sound.volume = 0.6;
+
+        let isShaking = false;
+
+        function startShake() {
+            if(isShaking) return;
+            isShaking = true;
+            btn.disabled = true;
+            btn.innerText = "摇签中...";
+            
+            sound.currentTime = 0;
+            sound.play().catch(() => {});
+
+            wrapper.classList.add('shake-animation');
+            resultStick.classList.remove('show');
+
+            setTimeout(() => {
+                wrapper.classList.remove('shake-animation');
+                sound.pause();
+                resultStick.classList.add('show');
+                setTimeout(() => { showFortune(); }, 800);
+            }, 2000);
+        }
+
+        function showFortune() {
+            const pick = fortunes[Math.floor(Math.random() * fortunes.length)];
+            document.getElementById('resTitle').innerText = pick.title;
+            document.getElementById('resText').innerText = pick.text;
+            modal.classList.add('active');
+            
+            isShaking = false;
+            btn.disabled = false;
+            btn.innerText = "再抽一次";
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            resultStick.classList.remove('show');
+        }
+
+        // --- 保存图片的逻辑 ---
+        function saveFortune() {
+            const card = document.getElementById('cardToSave');
+            const btnGroup = document.getElementById('btnGroup');
+            const qrMark = document.getElementById('qrMark');
+
+            // 1. 临时隐藏按钮，显示落款
+            btnGroup.style.display = 'none';
+            qrMark.style.display = 'block';
+
+            // 2. 使用 html2canvas 截图
+            html2canvas(card, {
+                scale: 2, // 提高清晰度
+                backgroundColor: '#FFF9E6', // 确保背景色正确
+                useCORS: true // 允许跨域图片（如果有）
+            }).then(canvas => {
+                // 3. 恢复界面状态
+                btnGroup.style.display = 'flex';
+                qrMark.style.display = 'none';
+
+                // 4. 创建下载链接并触发
+                const link = document.createElement('a');
+                link.download = '新年好运签-' + document.getElementById('resTitle').innerText + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                console.error("保存失败:", err);
+                alert("保存失败，请手动截图试试~");
+                btnGroup.style.display = 'flex';
+                qrMark.style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
